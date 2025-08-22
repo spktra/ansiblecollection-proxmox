@@ -1,0 +1,55 @@
+---
+# tasks file for lxc
+- name: Block for creation and upstart
+  when: lxc.state == "present"
+  block:
+    - name: Setup LXC Container
+      community.general.proxmox:
+        api_host: "{{ lxc_api_host }}"
+        api_user: "{{ lxc_api_user }}"
+        api_token_id: "{{ lxc_api_token_id }}"
+        api_token_secret: "{{ lxc_api_token_secret }}"
+        node: "{{ lxc.node }}"
+        vmid: "{{ lxc.id | default(omit) }}"
+        hostname: "{{ lxc.hostname }}"
+        password: "{{ lxc.password | default(omit) }}"
+        pubkey: "{{ lxc.pubkey | default(omit) }}"
+        ostemplate: "{{ lxc.ostemplate }}"
+        disk_volume:
+          storage: "{{ lxc.disk_volume.storage }}"
+          size: "{{ lxc.disk_volume.size | default('20') }}"
+        netif:
+          net0: "name=eth0,gw={{ lxc_netif_gw }},ip={{ lxc_netif_ip }},ip6={{ lxc_netif_ip6 | default('dhcp') }},bridge={{ lxc_netif_bridge | default('vmbr0') }}"
+        features:
+          - nesting=1
+        state: "{{ lxc.state | default('present') }}"
+
+    - name: Start LXC Container
+      community.general.proxmox:
+        api_host: "{{ lxc_api_host }}"
+        api_user: "{{ lxc_api_user }}"
+        api_token_id: "{{ lxc_api_token_id }}"
+        api_token_secret: "{{ lxc_api_token_secret }}"
+        vmid: "{{ lxc.id }}"
+        state: started
+
+- name: Block for Deletion of lxc container
+  when: lxc.state == "absent"
+  block:
+    - name: Stop LXC Container
+      community.general.proxmox:
+        api_host: "{{ lxc_api_host }}"
+        api_user: "{{ lxc_api_user }}"
+        api_token_id: "{{ lxc_api_token_id }}"
+        api_token_secret: "{{ lxc_api_token_secret }}"
+        vmid: "{{ lxc.id }}"
+        state: stopped
+
+    - name: Delete LXC Container
+      community.general.proxmox:
+        api_host: "{{ lxc_api_host }}"
+        api_user: "{{ lxc_api_user }}"
+        api_token_id: "{{ lxc_api_token_id }}"
+        api_token_secret: "{{ lxc_api_token_secret }}"
+        vmid: "{{ lxc.id }}"
+        state: absent
