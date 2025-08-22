@@ -1,0 +1,12 @@
+[project]
+name = "ansiblecollection-proxmox"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ansible>=11.2.0",
+    "ansible-lint>=25.1.2",
+    "proxmoxer>=2.2.0",
+    "requests>=2.32.3",
+]
