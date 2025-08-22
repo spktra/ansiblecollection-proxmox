@@ -4,7 +4,7 @@
   when: lxc.state == "present"
   block:
     - name: Setup LXC Container
-      community.general.proxmox:
+      community.proxmox.proxmox:
         api_host: "{{ lxc_api_host }}"
         api_user: "{{ lxc_api_user }}"
         api_token_id: "{{ lxc_api_token_id }}"
@@ -25,7 +25,7 @@
         state: "{{ lxc.state | default('present') }}"
 
     - name: Start LXC Container
-      community.general.proxmox:
+      community.proxmox.proxmox:
         api_host: "{{ lxc_api_host }}"
         api_user: "{{ lxc_api_user }}"
         api_token_id: "{{ lxc_api_token_id }}"
@@ -37,7 +37,7 @@
   when: lxc.state == "absent"
   block:
     - name: Stop LXC Container
-      community.general.proxmox:
+      community.proxmox.proxmox:
         api_host: "{{ lxc_api_host }}"
         api_user: "{{ lxc_api_user }}"
         api_token_id: "{{ lxc_api_token_id }}"
@@ -46,7 +46,7 @@
         state: stopped
 
     - name: Delete LXC Container
-      community.general.proxmox:
+      community.proxmox.proxmox:
         api_host: "{{ lxc_api_host }}"
         api_user: "{{ lxc_api_user }}"
         api_token_id: "{{ lxc_api_token_id }}"
